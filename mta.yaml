@@ -1,0 +1,69 @@
+_schema-version: "3.2"
+ID: CustomUI5
+description: Fiori elements app
+version: 0.0.1
+modules:
+- name: CustomUI5-dest-content
+  type: com.sap.application.content
+  requires:
+  - name: CustomUI5-destination-service
+    parameters:
+      content-target: true
+  - name: CustomUI5-repo-host
+    parameters:
+      service-key:
+        name: CustomUI5-repo-host-key
+  - name: CustomUI5-uaa
+    parameters:
+      service-key:
+        name: CustomUI5-uaa-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: CustomUI5_repo_host
+          ServiceInstanceName: CustomUI5-html5-srv
+          ServiceKeyName: CustomUI5-repo-host-key
+          sap.cloud.service: CustomUI5
+        - Authentication: OAuth2UserTokenExchange
+          Name: CustomUI5_uaa
+          ServiceInstanceName: CustomUI5-xsuaa-srv
+          ServiceKeyName: CustomUI5-uaa-key
+          sap.cloud.service: CustomUI5
+        existing_destinations_policy: update
+  build-parameters:
+    no-source: true
+resources:
+- name: CustomUI5-uaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json  
+    service: xsuaa
+    service-name: CustomUI5-xsuaa-srv
+    service-plan: application
+- name: CustomUI5-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      version: 1.0.0
+      init_data:
+        instance:
+          existing_destinations_policy: update
+          destinations:
+          - Name: ui5
+            Type: HTTP
+            URL: https://ui5.sap.com
+            ProxyType: Internet
+            Authentication: NoAuthentication
+    service: destination
+    service-name: CustomUI5-destination-service
+    service-plan: lite
+- name: CustomUI5-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: CustomUI5-html5-srv
+    service-plan: app-host
+parameters:
+  deploy_mode: html5-repo
