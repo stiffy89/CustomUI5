@@ -1,0 +1,14 @@
+http://people_dest.dest/odata/v4/peopleservice/$metadata
+
+###
+http://people_dest.dest/odata/v4/peopleservice/PeopleSet
+
+###
+http://Northwind.dest/Products
+
+###
+
+http://dest_ecc_crud_test.dest/People
+
+
+
